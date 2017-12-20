@@ -33,6 +33,7 @@ include_directories(SYSTEM ${EIGEN3_INCLUDE_DIRS})
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${CERES_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -47,7 +48,7 @@ add_library(${PROJECT_NAME}
 add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES}  ${CERES_LIBRARIES})
 
 #############
 ## Testing ##

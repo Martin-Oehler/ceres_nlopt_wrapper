@@ -3,6 +3,7 @@
 
 #include <nlopt.hpp>
 #include <sstream>
+#include <memory>
 
 namespace ceres_nlopt_wrapper {
 

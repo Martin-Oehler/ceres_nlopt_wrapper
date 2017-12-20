@@ -55,4 +55,17 @@ unsigned int CeresCostFunctionWrapper::getEvaluations() {
   return evaluation_counter_;
 }
 
+bool checkConstraints(const std::vector<double>& parameters, const std::vector<std::shared_ptr<CeresCostFunctionWrapper>>& constraints, double tolerance)
+{
+  for (const std::shared_ptr<CeresCostFunctionWrapper>& c: constraints) {
+    std::vector<double> gradient(parameters.size());
+//    c->setVerbosity(1);
+    double cost = c->operator ()(parameters, gradient);
+    if (cost > tolerance) {
+      return false;
+    }
+  }
+  return true;
+}
+
 }

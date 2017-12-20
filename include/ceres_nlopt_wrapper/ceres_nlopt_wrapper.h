@@ -38,6 +38,8 @@ private:
   unsigned int evaluation_counter_;
 };
 
+bool checkConstraints(const std::vector<double>& parameters, const std::vector<std::shared_ptr<CeresCostFunctionWrapper>>& constraints, double tolerance);
+
 }
 
 #endif
