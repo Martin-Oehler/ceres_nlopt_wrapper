@@ -16,6 +16,10 @@ double CeresCostFunctionWrapper::operator()(const std::vector<double> &x, std::v
   double const *const *parameters_ptr = &x_ptr;
   double* cost = new double;
 
+  if (verbosity_level_ > 0) {
+    ROS_INFO_STREAM(evaluation_counter_ << ": x = " << vecToString(x));
+  }
+
   if (!gradient.empty()) {
     double* gradient_ptr = &gradient[0];
     double **jacobian_ptr = &gradient_ptr;
@@ -32,7 +36,6 @@ double CeresCostFunctionWrapper::operator()(const std::vector<double> &x, std::v
   }
 
   if (verbosity_level_ > 0) {
-    ROS_INFO_STREAM(evaluation_counter_ << ": x = " << vecToString(x));
     ROS_INFO_STREAM(" *** f(x) = " << *cost);
     if (verbosity_level_ > 1) {
       if (!gradient.empty()) {
