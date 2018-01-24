@@ -58,17 +58,38 @@ unsigned int CeresCostFunctionWrapper::getEvaluations() {
   return evaluation_counter_;
 }
 
+void CeresCostFunctionWrapper::setName(const std::string &name)
+{
+  name_ = name;
+}
+
+std::string CeresCostFunctionWrapper::getName()
+{
+  return name_;
+}
+
 bool checkConstraints(const std::vector<double>& parameters, const std::vector<std::shared_ptr<CeresCostFunctionWrapper>>& constraints, double tolerance)
 {
+  std::vector<ConstraintViolation> constraint_violations;
+  return checkConstraints(parameters, constraints, tolerance, constraint_violations);
+}
+
+bool checkConstraints(const std::vector<double> &parameters, const std::vector<std::shared_ptr<CeresCostFunctionWrapper> > &constraints, double tolerance,
+                      std::vector<ConstraintViolation> &constraint_violations)
+{
+  constraint_violations.clear();
   for (const std::shared_ptr<CeresCostFunctionWrapper>& c: constraints) {
+    if (!c) {
+      ROS_ERROR_STREAM("Constraint is null.");
+      continue;
+    }
     std::vector<double> gradient(parameters.size());
-//    c->setVerbosity(1);
     double cost = c->operator ()(parameters, gradient);
     if (cost > tolerance) {
-      return false;
+      constraint_violations.push_back(ConstraintViolation(c, cost));
     }
   }
-  return true;
+  return constraint_violations.empty();
 }
 
 }
