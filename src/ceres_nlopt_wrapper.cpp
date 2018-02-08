@@ -14,7 +14,7 @@ double CeresCostFunctionWrapper::operator()(const std::vector<double> &x, std::v
   evaluation_counter_++;
   double const* x_ptr = &x[0];
   double const *const *parameters_ptr = &x_ptr;
-  double* cost = new double;
+  double cost;
 
   if (verbosity_level_ > 0) {
     ROS_INFO_STREAM(evaluation_counter_ << ": x = " << vecToString(x));
@@ -24,26 +24,34 @@ double CeresCostFunctionWrapper::operator()(const std::vector<double> &x, std::v
     double* gradient_ptr = &gradient[0];
     double **jacobian_ptr = &gradient_ptr;
 
-    if (!cost_function_->Evaluate(parameters_ptr, cost, jacobian_ptr)) {
+    if (!cost_function_->Evaluate(parameters_ptr, &cost, jacobian_ptr)) {
       ROS_ERROR_STREAM("Failed to evaluate cost function");
       return std::numeric_limits<double>::max();
     }
   } else {
-    if (!cost_function_->Evaluate(parameters_ptr, cost, NULL)) {
+    if (!cost_function_->Evaluate(parameters_ptr, &cost, NULL)) {
       ROS_ERROR_STREAM("Failed to evaluate cost function");
       return std::numeric_limits<double>::max();
     }
   }
 
   if (verbosity_level_ > 0) {
-    ROS_INFO_STREAM(" *** f(x) = " << *cost);
+    ROS_INFO_STREAM(" *** f(x) = " << cost);
     if (verbosity_level_ > 1) {
       if (!gradient.empty()) {
         ROS_INFO_STREAM(" *** f'(x) = " << vecToString(gradient));
       }
     }
   }
-  return *cost;
+  // check cost for nan/inf
+  if (std::isnan(cost)) {
+    ROS_ERROR_STREAM("Cost '" << getName() << "'is nan.");
+    ROS_ERROR_STREAM("x = " << vecToString(x));
+  }
+  if (std::isinf(cost)) {
+    ROS_WARN_STREAM("Cost '" << getName() << "'is inf.");
+  }
+  return cost;
 }
 
 double CeresCostFunctionWrapper::wrap(const std::vector<double> &x, std::vector<double> &grad, void *data) {
