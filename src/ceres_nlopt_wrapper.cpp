@@ -45,12 +45,12 @@ double CeresCostFunctionWrapper::operator()(const std::vector<double> &x, std::v
   }
   // check cost for nan/inf
   if (std::isnan(cost)) {
-    ROS_ERROR_STREAM("Cost '" << getName() << "'is nan.");
-    ROS_ERROR_STREAM("x = " << vecToString(x));
+    ROS_ERROR_STREAM("Cost '" << getName() << "'is nan. (x = " << vecToString(x) << ")");
   }
   if (std::isinf(cost)) {
-    ROS_WARN_STREAM("Cost '" << getName() << "'is inf.");
+    ROS_WARN_STREAM("Cost '" << getName() << "'is inf. (x = " << vecToString(x) << ")");
   }
+
   return cost;
 }
 
