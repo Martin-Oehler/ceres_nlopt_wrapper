@@ -2,6 +2,7 @@
 #define CERES_NLOPT_WRAPPER__CERES_NLOPT_WRAPPER
 
 #include <ceres/ceres.h>
+#include <ceres/gradient_checker.h>
 #include <nlopt.hpp>
 #include <ros/ros.h>
 #include <sstream>
@@ -30,6 +31,8 @@ public:
   /// \param data Pointer to CeresCostFunctionWrapper object
   /// \return Result of cost function evaluation
   static double wrap(const std::vector<double> &x, std::vector<double> &grad, void *data);
+
+  bool checkGradient(const std::vector<double> &x);
 
   void setVerbosity(int level);
   unsigned int getEvaluations();

@@ -58,6 +58,22 @@ double CeresCostFunctionWrapper::wrap(const std::vector<double> &x, std::vector<
   return (*static_cast<CeresCostFunctionWrapper*>(data))(x, grad);
 }
 
+bool CeresCostFunctionWrapper::checkGradient(const std::vector<double>& x)
+{
+  ceres::NumericDiffOptions numeric_diff_options;
+  ceres::GradientChecker gradient_checker(cost_function_, nullptr, numeric_diff_options);
+  ceres::GradientChecker::ProbeResults probe_results;
+  double const* x_ptr = &x[0];
+  double const *const *parameters_ptr = &x_ptr;
+  if (!gradient_checker.Probe(parameters_ptr, 1e-9, &probe_results)) {
+    ROS_ERROR_STREAM("Gradient check of '" << getName() << "' failed. Max relative error: " << probe_results.maximum_relative_error);
+    ROS_ERROR_STREAM("Gradient: " << probe_results.jacobians[0]);
+    ROS_ERROR_STREAM("Numeric gradient: " << probe_results.numeric_jacobians[0]);
+    return false;
+  }
+  return true;
+}
+
 void CeresCostFunctionWrapper::setVerbosity(int level) {
   verbosity_level_ = level;
 }
