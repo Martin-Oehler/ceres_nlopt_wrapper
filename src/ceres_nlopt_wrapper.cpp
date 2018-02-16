@@ -2,15 +2,42 @@
 
 namespace ceres_nlopt_wrapper {
 
-CeresCostFunctionWrapper::CeresCostFunctionWrapper(ceres::CostFunction *_cost_function, int verbosity_level)
-  : cost_function_(_cost_function), verbosity_level_(verbosity_level), evaluation_counter_(0)
-{}
+CeresCostFunctionWrapper::CeresCostFunctionWrapper(ceres::CostFunction *cost_function, int verbosity_level, bool use_numeric_diff)
+  : cost_function_(cost_function), verbosity_level_(verbosity_level), evaluation_counter_(0), use_numeric_diff_(use_numeric_diff)
+{
+  if (use_numeric_diff_) {
+    // Numeric Diff Wrapper
+    ceres::NumericDiffOptions options;
+    ceres::DynamicNumericDiffCostFunction<ceres::CostFunction, ceres::CENTRAL>* numeric_cost_function =
+        new ceres::DynamicNumericDiffCostFunction<ceres::CostFunction, ceres::CENTRAL>(
+          cost_function, ceres::DO_NOT_TAKE_OWNERSHIP, options);
+    const std::vector<ceres::int32>& parameter_block_sizes = cost_function_->parameter_block_sizes();
+    const int num_parameter_blocks = parameter_block_sizes.size();
+    for (int i = 0; i < num_parameter_blocks; ++i) {
+      numeric_cost_function->AddParameterBlock(parameter_block_sizes[i]);
+    }
+    numeric_cost_function->SetNumResiduals(cost_function_->num_residuals());
+    numeric_cost_function_ = static_cast<ceres::CostFunction*>(numeric_cost_function);
+  }
+}
 
 CeresCostFunctionWrapper::~CeresCostFunctionWrapper() {
   delete cost_function_;
+  if (use_numeric_diff_) {
+    delete numeric_cost_function_;
+  }
 }
 
 double CeresCostFunctionWrapper::operator()(const std::vector<double> &x, std::vector<double> &gradient) {
+  if (!use_numeric_diff_) {
+    return evaluateCostFunction(cost_function_, x, gradient);
+  } else {
+    return evaluateCostFunction(numeric_cost_function_, x, gradient);
+  }
+}
+
+double CeresCostFunctionWrapper::evaluateCostFunction(const ceres::CostFunction *cost_function, const std::vector<double> &x, std::vector<double> &gradient)
+{
   evaluation_counter_++;
   double const* x_ptr = &x[0];
   double const *const *parameters_ptr = &x_ptr;
@@ -24,12 +51,12 @@ double CeresCostFunctionWrapper::operator()(const std::vector<double> &x, std::v
     double* gradient_ptr = &gradient[0];
     double **jacobian_ptr = &gradient_ptr;
 
-    if (!cost_function_->Evaluate(parameters_ptr, &cost, jacobian_ptr)) {
+    if (!cost_function->Evaluate(parameters_ptr, &cost, jacobian_ptr)) {
       ROS_ERROR_STREAM("Failed to evaluate cost function");
       return std::numeric_limits<double>::max();
     }
   } else {
-    if (!cost_function_->Evaluate(parameters_ptr, &cost, NULL)) {
+    if (!cost_function->Evaluate(parameters_ptr, &cost, NULL)) {
       ROS_ERROR_STREAM("Failed to evaluate cost function");
       return std::numeric_limits<double>::max();
     }
@@ -65,7 +92,7 @@ bool CeresCostFunctionWrapper::checkGradient(const std::vector<double>& x)
   ceres::GradientChecker::ProbeResults probe_results;
   double const* x_ptr = &x[0];
   double const *const *parameters_ptr = &x_ptr;
-  if (!gradient_checker.Probe(parameters_ptr, 1e-9, &probe_results)) {
+  if (!gradient_checker.Probe(parameters_ptr, 1e-5, &probe_results)) {
     ROS_ERROR_STREAM("Gradient check of '" << getName() << "' failed. Max relative error: " << probe_results.maximum_relative_error);
     ROS_ERROR_STREAM("Gradient: " << probe_results.jacobians[0]);
     ROS_ERROR_STREAM("Numeric gradient: " << probe_results.numeric_jacobians[0]);

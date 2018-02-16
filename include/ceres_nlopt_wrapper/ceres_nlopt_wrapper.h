@@ -18,10 +18,12 @@ public:
    * Takes ownership of _cost_function
    * @param _cost_function ceres::CostFunction to wrap
    */
-  CeresCostFunctionWrapper(ceres::CostFunction* _cost_function, int verbosity_level=0);
+  CeresCostFunctionWrapper(ceres::CostFunction* _cost_function, int verbosity_level=0, bool use_numeric_diff=false);
   ~CeresCostFunctionWrapper();
 
   double operator()(const std::vector<double> &x, std::vector<double> &gradient);
+
+  double evaluateCostFunction(const ceres::CostFunction* cost_function, const std::vector<double> &x, std::vector<double> &gradient);
 
   /// \brief Wraps an object for use as a function pointer in nlopt
   /// Example: CeresCostFunctionWrapper support_area_cost(..);
@@ -40,8 +42,10 @@ public:
   std::string getName();
 private:
   ceres::CostFunction* cost_function_;
+  ceres::CostFunction* numeric_cost_function_;
   int verbosity_level_;
   unsigned int evaluation_counter_;
+  bool use_numeric_diff_;
 
   std::string name_; // Optional name for function
 };
