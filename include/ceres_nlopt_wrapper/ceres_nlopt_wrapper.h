@@ -40,12 +40,16 @@ public:
   unsigned int getEvaluations();
   void setName(const std::string& name);
   std::string getName();
+  void enableNanCheck(bool enable);
+  void enableInfCheck(bool enable);
 private:
   ceres::CostFunction* cost_function_;
   ceres::CostFunction* numeric_cost_function_;
   int verbosity_level_;
   unsigned int evaluation_counter_;
   bool use_numeric_diff_;
+  bool nan_check_;
+  bool inf_check_;
 
   std::string name_; // Optional name for function
 };

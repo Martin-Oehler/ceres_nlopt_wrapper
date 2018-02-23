@@ -3,7 +3,7 @@
 namespace ceres_nlopt_wrapper {
 
 CeresCostFunctionWrapper::CeresCostFunctionWrapper(ceres::CostFunction *cost_function, int verbosity_level, bool use_numeric_diff)
-  : cost_function_(cost_function), verbosity_level_(verbosity_level), evaluation_counter_(0), use_numeric_diff_(use_numeric_diff)
+  : cost_function_(cost_function), verbosity_level_(verbosity_level), evaluation_counter_(0), use_numeric_diff_(use_numeric_diff), nan_check_(false), inf_check_(false)
 {
   if (use_numeric_diff_) {
     // Numeric Diff Wrapper
@@ -71,10 +71,10 @@ double CeresCostFunctionWrapper::evaluateCostFunction(const ceres::CostFunction 
     }
   }
   // check cost for nan/inf
-  if (std::isnan(cost)) {
+  if (nan_check_ && std::isnan(cost)) {
     ROS_ERROR_STREAM("Cost '" << getName() << "'is nan. (x = " << vecToString(x) << ")");
   }
-  if (std::isinf(cost)) {
+  if (inf_check_ && std::isinf(cost)) {
     ROS_WARN_STREAM("Cost '" << getName() << "'is inf. (x = " << vecToString(x) << ")");
   }
 
@@ -117,6 +117,16 @@ void CeresCostFunctionWrapper::setName(const std::string &name)
 std::string CeresCostFunctionWrapper::getName()
 {
   return name_;
+}
+
+void CeresCostFunctionWrapper::enableNanCheck(bool enable)
+{
+  nan_check_ = enable;
+}
+
+void CeresCostFunctionWrapper::enableInfCheck(bool enable)
+{
+  inf_check_ = enable;
 }
 
 bool checkConstraints(const std::vector<double>& parameters, const std::vector<std::shared_ptr<CeresCostFunctionWrapper>>& constraints, double tolerance)
