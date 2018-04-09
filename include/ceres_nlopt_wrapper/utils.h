@@ -28,6 +28,8 @@ std::string resultToString(const nlopt::result& result);
 
 nlopt::algorithm stringToAlgorithm(const std::string& name);
 
+void setParametersFromServer(const ros::NodeHandle& nh, nlopt::opt& opt);
+
 }
 
 #endif

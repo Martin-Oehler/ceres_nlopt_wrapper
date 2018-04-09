@@ -153,4 +153,40 @@ nlopt::algorithm stringToAlgorithm(const std::string &name) {
   return nlopt::NUM_ALGORITHMS;
 }
 
+void setParametersFromServer(const ros::NodeHandle &nh, nlopt::opt &opt) {
+  double xtol_abs, xtol_rel;
+  double ftol_abs, ftol_rel;
+  int maxeval;
+  double maxtime;
+
+  std::stringstream ss;
+  ss << "Loaded:" << std::endl;
+
+  if (nh.getParam("xtol_abs", xtol_abs)) {
+    ss << " xtol_abs = " << xtol_abs << std::endl;
+    opt.set_xtol_abs(xtol_abs);
+  }
+  if (nh.getParam("xtol_rel", xtol_rel)) {
+    ss << " xtol_rel = " << xtol_rel << std::endl;
+    opt.set_xtol_rel(xtol_rel);
+  }
+  if (nh.getParam("ftol_abs", ftol_abs)) {
+    ss << " ftol_abs = " << ftol_abs << std::endl;
+    opt.set_ftol_abs(ftol_abs);
+  }
+  if (nh.getParam("ftol_rel", ftol_rel)) {
+    ss << " ftol_rel = " << ftol_rel << std::endl;
+    opt.set_ftol_rel(ftol_rel);
+  }
+  if (nh.getParam("maxeval", maxeval)) {
+    ss << " maxeval = " << maxeval << std::endl;
+    opt.set_maxeval(maxeval);
+  }
+  if (nh.getParam("maxtime", maxtime)) {
+    ss << " maxtime = " << maxtime << std::endl;
+    opt.set_maxtime(maxtime);
+  }
+  ROS_DEBUG_STREAM(ss.str());
+}
+
 }
