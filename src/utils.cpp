@@ -145,9 +145,9 @@ nlopt::algorithm stringToAlgorithm(const std::string &name) {
   if (s == "LD_CCSAQ") {
     return nlopt::LD_CCSAQ;
   }
-  if (s == "GN_ESCH") {
-    return nlopt::GN_ESCH;
-  }
+//  if (s == "GN_ESCH") {
+//    return nlopt::GN_ESCH;
+//  }
 
   ROS_ERROR_STREAM("Unknown algorithm name '" << s << "'");
   return nlopt::NUM_ALGORITHMS;
