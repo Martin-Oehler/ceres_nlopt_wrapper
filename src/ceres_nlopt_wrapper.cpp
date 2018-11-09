@@ -2,8 +2,14 @@
 
 namespace ceres_nlopt_wrapper {
 
-CeresCostFunctionWrapper::CeresCostFunctionWrapper(ceres::CostFunction *cost_function, int verbosity_level, bool use_numeric_diff)
-  : cost_function_(cost_function), verbosity_level_(verbosity_level), evaluation_counter_(0), use_numeric_diff_(use_numeric_diff), nan_check_(false), inf_check_(false)
+CeresCostFunctionWrapper::CeresCostFunctionWrapper(ceres::CostFunction *cost_function, int verbosity_level, bool use_numeric_diff, ceres::Ownership ownership)
+  : cost_function_(cost_function),
+    ownership_(ownership),
+    verbosity_level_(verbosity_level),
+    evaluation_counter_(0),
+    use_numeric_diff_(use_numeric_diff),
+    nan_check_(false),
+    inf_check_(false)
 {
   if (use_numeric_diff_) {
     // Numeric Diff Wrapper
@@ -22,7 +28,9 @@ CeresCostFunctionWrapper::CeresCostFunctionWrapper(ceres::CostFunction *cost_fun
 }
 
 CeresCostFunctionWrapper::~CeresCostFunctionWrapper() {
-  delete cost_function_;
+  if (ownership_ == ceres::TAKE_OWNERSHIP) {
+    delete cost_function_;
+  }
   if (use_numeric_diff_) {
     delete numeric_cost_function_;
   }

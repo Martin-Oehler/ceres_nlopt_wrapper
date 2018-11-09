@@ -18,7 +18,7 @@ public:
    * Takes ownership of _cost_function
    * @param _cost_function ceres::CostFunction to wrap
    */
-  CeresCostFunctionWrapper(ceres::CostFunction* _cost_function, int verbosity_level=0, bool use_numeric_diff=false);
+  CeresCostFunctionWrapper(ceres::CostFunction* _cost_function, int verbosity_level=0, bool use_numeric_diff=false, ceres::Ownership ownership = ceres::TAKE_OWNERSHIP);
   ~CeresCostFunctionWrapper();
 
   double operator()(const std::vector<double> &x, std::vector<double> &gradient);
@@ -44,6 +44,7 @@ public:
   void enableInfCheck(bool enable);
 private:
   ceres::CostFunction* cost_function_;
+  ceres::Ownership ownership_;
   ceres::CostFunction* numeric_cost_function_;
   int verbosity_level_;
   unsigned int evaluation_counter_;
