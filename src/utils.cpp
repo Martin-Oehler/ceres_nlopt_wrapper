@@ -136,9 +136,6 @@ nlopt::algorithm stringToAlgorithm(const std::string &name) {
   if (s == "G_MLSL_LDS") {
     return nlopt::G_MLSL_LDS;
   }
-  if (s == "") {
-    return nlopt::GD_MLSL;
-  }
   if (s == "LD_SLSQP") {
     return nlopt::LD_SLSQP;
   }
