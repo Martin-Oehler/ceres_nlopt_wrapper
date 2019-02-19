@@ -43,6 +43,6 @@
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <depend>roscpp</depend>
-  <depend>ceres-solver</depend>
+  <depend>ceres_catkin</depend>
   <depend>nlopt</depend>
 </package>

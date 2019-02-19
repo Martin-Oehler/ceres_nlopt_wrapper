@@ -8,6 +8,7 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   nlopt
   roscpp
+  ceres_catkin
 )
 
 
@@ -21,7 +22,7 @@ catkin_package(
   DEPENDS Eigen3
 )
 
-find_package(Ceres REQUIRED)
+#find_package(Ceres REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 ###########
