@@ -55,19 +55,16 @@ double CeresCostFunctionWrapper::evaluateCostFunction(const ceres::CostFunction 
     ROS_INFO_STREAM(evaluation_counter_ << ": x = " << vecToString(x));
   }
 
-  if (!gradient.empty()) {
-    double* gradient_ptr = &gradient[0];
-    double **jacobian_ptr = &gradient_ptr;
+  double* gradient_ptr = &gradient[0];
+  double **jacobian_ptr = nullptr;
 
-    if (!cost_function->Evaluate(parameters_ptr, &cost, jacobian_ptr)) {
-      ROS_ERROR_STREAM("Failed to evaluate cost function");
-      return std::numeric_limits<double>::max();
-    }
-  } else {
-    if (!cost_function->Evaluate(parameters_ptr, &cost, NULL)) {
-      ROS_ERROR_STREAM("Failed to evaluate cost function");
-      return std::numeric_limits<double>::max();
-    }
+  if (!gradient.empty()) {
+    jacobian_ptr = &gradient_ptr;
+  }
+
+  if (!cost_function->Evaluate(parameters_ptr, &cost, jacobian_ptr)) {
+    ROS_ERROR_STREAM("Failed to evaluate cost function");
+    return std::numeric_limits<double>::max();
   }
 
   if (verbosity_level_ > 0) {
