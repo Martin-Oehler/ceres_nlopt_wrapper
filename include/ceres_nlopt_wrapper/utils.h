@@ -1,5 +1,5 @@
-#ifndef CERES_NLOPT_WRAPPER__UTILS_H
-#define CERES_NLOPT_WRAPPER__UTILS_H
+#ifndef CERES_NLOPT_WRAPPER_UTILS_H
+#define CERES_NLOPT_WRAPPER_UTILS_H
 
 #include <ros/ros.h>
 

@@ -1,5 +1,5 @@
-#ifndef CERES_NLOPT_WRAPPER__CERES_NLOPT_WRAPPER
-#define CERES_NLOPT_WRAPPER__CERES_NLOPT_WRAPPER
+#ifndef CERES_NLOPT_WRAPPER_CERES_NLOPT_WRAPPER
+#define CERES_NLOPT_WRAPPER_CERES_NLOPT_WRAPPER
 
 #include <ceres/ceres.h>
 #include <ceres/gradient_checker.h>
@@ -23,8 +23,6 @@ public:
 
   double operator()(const std::vector<double> &x, std::vector<double> &gradient);
 
-  double evaluateCostFunction(const ceres::CostFunction* cost_function, const std::vector<double> &x, std::vector<double> &gradient);
-
   /// \brief Wraps an object for use as a function pointer in nlopt
   /// Example: CeresCostFunctionWrapper support_area_cost(..);
   /// opt.set_min_objective(ceres_nlopt_wrapper::CeresCostFunctionWrapper::wrap, &support_area_cost);
@@ -43,6 +41,8 @@ public:
   void enableNanCheck(bool enable);
   void enableInfCheck(bool enable);
 private:
+  double evaluateCostFunction(const ceres::CostFunction* cost_function, const std::vector<double> &x, std::vector<double> &gradient);
+
   ceres::CostFunction* cost_function_;
   ceres::Ownership ownership_;
   ceres::CostFunction* numeric_cost_function_;
