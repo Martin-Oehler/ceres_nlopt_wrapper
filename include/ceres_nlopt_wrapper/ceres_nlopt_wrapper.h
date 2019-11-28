@@ -8,6 +8,7 @@
 #include <sstream>
 
 #include <ceres_nlopt_wrapper/utils.h>
+#include <ceres_nlopt_wrapper/optimization_history.h>
 
 namespace ceres_nlopt_wrapper {
 
@@ -18,7 +19,8 @@ public:
    * Takes ownership of _cost_function
    * @param _cost_function ceres::CostFunction to wrap
    */
-  CeresCostFunctionWrapper(ceres::CostFunction* _cost_function, int verbosity_level=0, bool use_numeric_diff=false, ceres::Ownership ownership = ceres::TAKE_OWNERSHIP);
+  CeresCostFunctionWrapper(ceres::CostFunction* _cost_function, int verbosity_level=0, HistoryWriter* history=nullptr, bool use_numeric_diff=false,
+                           ceres::Ownership ownership = ceres::TAKE_OWNERSHIP);
   ~CeresCostFunctionWrapper();
 
   double operator()(const std::vector<double> &x, std::vector<double> &gradient);
@@ -36,6 +38,7 @@ public:
 
   void setVerbosity(int level);
   unsigned int getEvaluations();
+  void resetEvaluationCounter();
   void setName(const std::string& name);
   std::string getName();
   void enableNanCheck(bool enable);
@@ -47,6 +50,7 @@ private:
   ceres::Ownership ownership_;
   ceres::CostFunction* numeric_cost_function_;
   int verbosity_level_;
+  HistoryWriter* history_;
   unsigned int evaluation_counter_;
   bool use_numeric_diff_;
   bool nan_check_;

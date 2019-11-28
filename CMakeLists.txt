@@ -41,8 +41,10 @@ include_directories(
 add_library(${PROJECT_NAME}
   include/${PROJECT_NAME}/ceres_nlopt_wrapper.h
   include/${PROJECT_NAME}/utils.h
+  include/${PROJECT_NAME}/optimization_history.h
   src/ceres_nlopt_wrapper.cpp
   src/utils.cpp
+  src/optimization_history.cpp
 )
 
 ## Add cmake target dependencies of the library

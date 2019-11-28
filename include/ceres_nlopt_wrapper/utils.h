@@ -30,6 +30,19 @@ nlopt::algorithm stringToAlgorithm(const std::string& name);
 
 void setParametersFromServer(const ros::NodeHandle& nh, nlopt::opt& opt);
 
+template<typename T>
+bool is_equal(const std::vector<T>& v1, const std::vector<T>& v2) {
+  if (v1.size() != v2.size()) {
+    return false;
+  }
+  for (size_t i = 0; i < v1.size(); ++i) {
+    if (v1[i] != v2[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 }
 
 #endif

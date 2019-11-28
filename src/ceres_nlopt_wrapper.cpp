@@ -2,10 +2,11 @@
 
 namespace ceres_nlopt_wrapper {
 
-CeresCostFunctionWrapper::CeresCostFunctionWrapper(ceres::CostFunction *cost_function, int verbosity_level, bool use_numeric_diff, ceres::Ownership ownership)
+CeresCostFunctionWrapper::CeresCostFunctionWrapper(ceres::CostFunction *cost_function, int verbosity_level, HistoryWriter* history, bool use_numeric_diff, ceres::Ownership ownership)
   : cost_function_(cost_function),
     ownership_(ownership),
     verbosity_level_(verbosity_level),
+    history_(history),
     evaluation_counter_(0),
     use_numeric_diff_(use_numeric_diff),
     nan_check_(false),
@@ -37,11 +38,16 @@ CeresCostFunctionWrapper::~CeresCostFunctionWrapper() {
 }
 
 double CeresCostFunctionWrapper::operator()(const std::vector<double> &x, std::vector<double> &gradient) {
+  double fvalue;
   if (!use_numeric_diff_) {
-    return evaluateCostFunction(cost_function_, x, gradient);
+    fvalue = evaluateCostFunction(cost_function_, x, gradient);
   } else {
-    return evaluateCostFunction(numeric_cost_function_, x, gradient);
+    fvalue = evaluateCostFunction(numeric_cost_function_, x, gradient);
   }
+  if (history_) {
+    history_->addEntry(x, fvalue);
+  }
+  return fvalue;
 }
 
 double CeresCostFunctionWrapper::evaluateCostFunction(const ceres::CostFunction *cost_function, const std::vector<double> &x, std::vector<double> &gradient)
@@ -112,6 +118,11 @@ void CeresCostFunctionWrapper::setVerbosity(int level) {
 
 unsigned int CeresCostFunctionWrapper::getEvaluations() {
   return evaluation_counter_;
+}
+
+void CeresCostFunctionWrapper::resetEvaluationCounter()
+{
+  evaluation_counter_ = 0;
 }
 
 void CeresCostFunctionWrapper::setName(const std::string &name)
