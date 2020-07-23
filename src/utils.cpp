@@ -155,6 +155,7 @@ void setParametersFromServer(const ros::NodeHandle &nh, nlopt::opt &opt) {
   double ftol_abs, ftol_rel;
   int maxeval;
   double maxtime;
+  double stopval;
 
   std::stringstream ss;
   ss << "Loaded:" << std::endl;
@@ -182,6 +183,10 @@ void setParametersFromServer(const ros::NodeHandle &nh, nlopt::opt &opt) {
   if (nh.getParam("maxtime", maxtime)) {
     ss << " maxtime = " << maxtime << std::endl;
     opt.set_maxtime(maxtime);
+  }
+  if (nh.getParam("stopval", stopval)) {
+    ss << " stopval = " << stopval << std::endl;
+    opt.set_stopval(stopval);
   }
   ROS_DEBUG_STREAM(ss.str());
 }
