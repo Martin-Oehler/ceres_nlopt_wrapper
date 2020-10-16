@@ -30,6 +30,8 @@ nlopt::algorithm stringToAlgorithm(const std::string& name);
 
 void setParametersFromServer(const ros::NodeHandle& nh, nlopt::opt& opt);
 
+void applyBounds(const std::vector<double>& lower, const std::vector<double>& upper, std::vector<double>& parameters);
+
 template<typename T>
 bool is_equal(const std::vector<T>& v1, const std::vector<T>& v2) {
   if (v1.size() != v2.size()) {

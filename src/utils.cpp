@@ -191,4 +191,11 @@ void setParametersFromServer(const ros::NodeHandle &nh, nlopt::opt &opt) {
   ROS_DEBUG_STREAM(ss.str());
 }
 
+void applyBounds(const std::vector<double>& lower, const std::vector<double>& upper, std::vector<double>& parameters)
+{
+  for (unsigned int i = 0; i < parameters.size(); ++i) {
+    parameters[i] = std::max(std::min(parameters[i], upper[i]), lower[i]);
+  }
+}
+
 }
