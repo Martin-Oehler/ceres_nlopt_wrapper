@@ -19,7 +19,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ceres_nlopt_wrapper
   CATKIN_DEPENDS nlopt roscpp
-  DEPENDS Eigen3
+  #DEPENDS Eigen3 Not working because Eigen uses non-standard names
 )
 
 #find_package(Ceres REQUIRED)
