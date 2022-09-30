@@ -1,5 +1,7 @@
 #include <ceres_nlopt_wrapper/nlopt_parameter_server.h>
 
+#include <ceres_nlopt_wrapper/utils.h>
+
 namespace ceres_nlopt_wrapper {
 
 static std::map<std::string, std::string> algorithm_map = {
@@ -28,6 +30,7 @@ static std::map<std::string, std::string> algorithm_map = {
   {"GN_MLSL_LDS","GN_MLSL_LDS"},
   {"GD_MLSL_LDS","GD_MLSL_LDS"},
   {"LD_MMA","LD_MMA"},
+  {"LN_COBYLA","LN_COBYLA"},
   {"LN_NEWUOA","LN_NEWUOA"},
   {"LN_NEWUOA_BOUND","LN_NEWUOA_BOUND"},
   {"LN_NELDERMEAD","LN_NELDERMEAD"},
@@ -54,7 +57,14 @@ NloptParameterServer::NloptParameterServer(const ros::NodeHandle& nh, unsigned i
 }
 void NloptParameterServer::loadParametersFromNamespace(const ros::NodeHandle& nh)
 {
+  reconfigure_ = std::make_shared<ddynamic_reconfigure::DDynamicReconfigure>(nh);
+  // Initialize optimizer
+  std::string algorithm = nh.param<std::string>("algorithm", "GN_DIRECT_L");
+  opt_ = createOptimizer(algorithm);
   reconfigure_->registerEnumVariable<std::string>("algorithm", "GN_DIRECT_L" , boost::bind(&NloptParameterServer::algorithmCallback, this, _1), "Algorithm", algorithm_map);
+
+  // Load parameter server values and register variables
+  setParametersFromServer(nh, opt_);
   reconfigure_->registerVariable<double>("xtol_abs", 0.0, boost::bind(&NloptParameterServer::xTolAbsCallback, this, _1), "xtol_abs", 0, 10);
   reconfigure_->registerVariable<double>("xtol_rel", 0.0, boost::bind(&NloptParameterServer::xTolRelCallback, this, _1), "xtol_rel", 0, 10);
   reconfigure_->registerVariable<double>("ftol_abs", 0.0, boost::bind(&NloptParameterServer::fTolAbsCallback, this, _1), "ftol_abs", 0, 10);
