@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   nlopt
   roscpp
   ceres_catkin
+  ddynamic_reconfigure
 )
 
 
@@ -18,7 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ceres_nlopt_wrapper
-  CATKIN_DEPENDS nlopt roscpp
+  CATKIN_DEPENDS nlopt roscpp ddynamic_reconfigure
   #DEPENDS Eigen3 Not working because Eigen uses non-standard names
 )
 
@@ -42,10 +43,11 @@ add_library(${PROJECT_NAME}
   include/${PROJECT_NAME}/ceres_nlopt_wrapper.h
   include/${PROJECT_NAME}/utils.h
   include/${PROJECT_NAME}/optimization_history.h
+  include/${PROJECT_NAME}/nlopt_parameter_server.h
   src/ceres_nlopt_wrapper.cpp
   src/utils.cpp
   src/optimization_history.cpp
-)
+  src/nlopt_parameter_server.cpp)
 
 ## Add cmake target dependencies of the library
 add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})

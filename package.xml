@@ -45,4 +45,5 @@
   <depend>roscpp</depend>
   <depend>ceres_catkin</depend>
   <depend>nlopt</depend>
+  <depend>ddynamic_reconfigure</depend>
 </package>
