@@ -71,7 +71,7 @@ void NloptParameterServer::loadParametersFromNamespace(const ros::NodeHandle& nh
   reconfigure_->registerVariable<double>("ftol_rel", 0.0, boost::bind(&NloptParameterServer::fTolRelCallback, this, _1), "ftol_rel", 0, 10);
   reconfigure_->registerVariable<int>("maxeval", 0, boost::bind(&NloptParameterServer::maxEvalCallback, this, _1), "maxeval", 0, std::numeric_limits<int>::max());
   reconfigure_->registerVariable<double>("maxtime", 0.0, boost::bind(&NloptParameterServer::maxTimeCallback, this, _1), "maxtime", 0, std::numeric_limits<double>::max());
-  reconfigure_->registerVariable<double>("stopval", 0.0, boost::bind(&NloptParameterServer::stopvalCallback, this, _1), "stopval", 0, std::numeric_limits<double>::max());
+  reconfigure_->registerVariable<double>("stopval", 0.0, boost::bind(&NloptParameterServer::stopvalCallback, this, _1), "stopval", -100000, 10000);
   reconfigure_->publishServicesTopics();
 }
 void NloptParameterServer::algorithmCallback(std::string algorithm)
