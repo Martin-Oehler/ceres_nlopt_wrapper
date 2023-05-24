@@ -10,7 +10,7 @@ std::string resultToString(const nlopt::result &result) {
     case nlopt::ROUNDOFF_LIMITED: return "ROUNDOFF_LIMITED";
     case nlopt::FORCED_STOP: return "FORCED_STOP";
     case nlopt::SUCCESS: return "SUCCESS";
-    case nlopt::STOPVAL_REACHED: return "STOPCAL_REACHED";
+    case nlopt::STOPVAL_REACHED: return "STOPVAL_REACHED";
     case nlopt::FTOL_REACHED: return "FTOL_REACHED";
     case nlopt::XTOL_REACHED: return "XTOL_REACHED";
     case nlopt::MAXEVAL_REACHED: return "MAXEVAL_REACHED";
