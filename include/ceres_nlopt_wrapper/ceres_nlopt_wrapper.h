@@ -34,7 +34,7 @@ public:
   /// \return Result of cost function evaluation
   static double wrap(const std::vector<double> &x, std::vector<double> &grad, void *data);
 
-  bool checkGradient(const std::vector<double> &x);
+  bool checkGradient(const std::vector<double> &x, double relative_precision=1e-5, double absolute_error=1e-5);
 
   void setVerbosity(int level);
   unsigned int getEvaluations();
